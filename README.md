@@ -59,10 +59,10 @@
    │   ├── StockSentimentAnalysis.java
    │   └── ResultProcessor.java
    ├── target/
-   │   └── stock-sentiment-analysis-1.0-SNAPSHOT.jar   # 保留 jar 即可
+   │   └── stock-sentiment-analysis-1.0-SNAPSHOT.jar   
    ├── output/
-   │   └── part-r-00000                                # MapReduce 原始输出（必须包含）
-   ├── screenshots/                                    # 放作业运行截图（可选）
+   │   └── part-r-00000                                
+   ├── screenshots/                                   
    ├── pom.xml
    ├── .gitignore
    └── README.md
