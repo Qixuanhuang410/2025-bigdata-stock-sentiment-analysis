@@ -1,0 +1,48 @@
+# Maven - ignore everything under target except jars
+/target/*
+!/target/*.jar
+
+# Keep maven logs out
+/maven_package.log
+/maven_compile.log
+
+# Output: include only the required result file
+/output/*
+!/output/part-r-00000
+
+# IDE
+/.idea/
+/.vscode/
+*.iml
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+*.tmp
+*.temp
+*.backup
+
+# Data files (do not include large input data unless needed)
+data/
+
+# Hadoop temporary files
+_output/
+_raw_output.txt
+job_logs.txt
+sources.txt
+
+# Others
+classes/
+lib/
+results/
+backup/
+
+# Local environment
+.env
+
