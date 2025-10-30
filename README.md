@@ -2,6 +2,118 @@
 
 ## 项目简介
 
+本项目使用 Hadoop MapReduce 对股票相关短文本（新闻标题 / 推文）进行情感词频统计：
+分别统计正面（1）和负面（-1）文本中出现频率最高的词，并输出每类前 100 个高频词。
+
+## 仓库结构（提交要求）
+
+```
+stock-sentiment-analysis/
+├── src/main/java/com/stock/analysis/    # 源代码（含主类和后处理）
+├── target/                              # 只在提交中保留 jar（target/*.jar）
+├── output/                              # 包含 MapReduce 输出：part-r-00000
+├── screenshots/                         # 作业成功截图（README 中引用）
+├── pom.xml
+├── .gitignore
+└── README.md
+```
+
+## 构建（本地）
+
+前提：已安装 Java、Maven。Hadoop（伪分布式或集群）用于运行 MapReduce。
+
+在项目根目录运行：
+
+```bash
+mvn clean package -DskipTests
+```
+
+构建成功后，jar 位于 `target/stock-sentiment-analysis-1.0-SNAPSHOT.jar`。
+
+## 运行（脚本）
+
+项目提供 `run.sh` 实现：
+
+- 上传数据到 HDFS（`data/stock_data.csv`、`data/stop-word-list.txt`）
+- 提交 MapReduce：`hadoop jar target/…jar <input> <output>`（使用 JAR 的 Main-Class）
+- 下载 `/user/<you>/stock_analysis/output/part-r-00000` 到本地 `output/`
+- 运行 `ResultProcessor` 做后处理，生成 `output/positive_top100.txt` 和 `output/negative_top100.txt`
+
+直接运行完整流程：
+
+```bash
+./run.sh
+```
+
+或手动运行：
+
+```bash
+# 提交 MapReduce
+hadoop jar target/stock-sentiment-analysis-1.0-SNAPSHOT.jar \
+    /user/$(whoami)/stock_analysis/stock_data.csv \
+    /user/$(whoami)/stock_analysis/output
+
+# 下载并后处理
+hdfs dfs -get /user/$(whoami)/stock_analysis/output/part-r-00000 ./output/
+java -cp target/classes com.stock.analysis.ResultProcessor output/part-r-00000 output
+```
+
+## 运行示例（摘录）
+
+正面高频词（示例）：
+
+```
+Word	Count
+aap	363
+user	301
+https	208
+```
+
+负面高频词（示例）：
+
+```
+Word	Count
+aap	326
+https	302
+short	233
+```
+
+以上示例来自一次本地运行，结果会随输入数据不同而变化。
+
+## 提交清单（作业要求）
+
+- `src/`（源代码）
+- `target/*.jar`（只保留 jar）
+- `output/part-r-00000`（MapReduce 原始输出）
+- `pom.xml`
+- `.gitignore`
+- `README.md`
+- `screenshots/`（作业成功截图，建议包含）
+
+示例打包命令（项目根目录）：
+
+```bash
+zip -r submission.zip src target/*.jar output/part-r-00000 pom.xml .gitignore README.md screenshots
+```
+
+## 已知问题与改进
+
+- 后处理（Top-K）目前在单机完成，遇到极大数据量时可能成为瓶颈，建议用二次 MapReduce 实现分布式 Top-K。
+- 使用 Hadoop 分布式缓存优化停用词加载可减少每个 Mapper 的 HDFS 读开销。
+- 在 `pom.xml` 中把 Hadoop 相关依赖设为 `provided`，避免把集群核心库打包进最终 jar。
+
+## 如果你在 GitHub 上看到文件丢失或脚本缺失
+
+我已在仓库中保留并提交 `build.sh`、`build_reliable.sh`、`manual_build.sh`、`organize.sh`、`run.sh` 等脚本。
+如果你在 GitHub 页面仍然看不到某些文件，请刷新页面并确认你查看的分支是 `main`。如需，我可以把缺失文件再次恢复并强制推送。
+
+---
+
+如需我把仓库清理（例如把大文件从历史中移除）或把提交推到指定远程/更改分支名，请告诉我下一步操作。
+# 股票情感分析 - Stock Sentiment Analysis
+
+## 项目简介
+
 本项目使用Hadoop MapReduce对股票新闻标题进行情感分析，统计正面和负面情感新闻中出现频率最高的前100个单词。
 
 ## 设计思路
