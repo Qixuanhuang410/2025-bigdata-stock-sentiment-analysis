@@ -127,10 +127,3 @@
    https	302
    short	233
    ```
-
-
-   ## 已知问题与改进方向
-
-   - 后处理（Top-K）在单机完成，建议改为第二轮 MapReduce 做分布式 Top-K
-   - 使用 Hadoop 分布式缓存优化停用词加载
-   - 在 pom 中将 Hadoop 相关依赖设为 `provided`，避免把 Hadoop 核心库打包进最终 jar
